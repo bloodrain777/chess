@@ -30,12 +30,12 @@
     position: relative;
 }
 .black {
-    #background-image: url('./assets/black.png');
-    background-color: #b24c60;
+    background-image: url('./assets/black.png');
+    #background-color: #b24c60;
 }
 .white {
-    #background-image: url('./assets/white.png');
-    background-color: pink;
+    background-image: url('./assets/white.png');
+    #background-color: pink;
 }
 
 .selected {
