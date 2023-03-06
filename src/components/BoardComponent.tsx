@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import { Board } from '../models/Board';
 import CellComponent from './CellComponent';
+import {Cell} from "../models/Cell";
 
 
 interface BoardProps { 
@@ -9,18 +10,48 @@ interface BoardProps {
 }
 
 const BoardComponent: FC<BoardProps> = ({board, setBoard}) => {
-  return (
-    <div className="board">
-        {board.cells.map((row, index) => 
-            <React.Fragment key={index}>
-                {row.map(cell => <CellComponent
-                    cell={cell}
-                    key={cell.id}
-                />)}
-            </React.Fragment>
-        )}
-    </div>
-  );
+
+    const [selectedCell, setSelectedCell] = useState<Cell | null>(null)
+
+    useEffect(() => {
+        highliteCells()
+    }, [selectedCell])
+
+    function click(cell: Cell) {
+
+        if (selectedCell && selectedCell !== cell && selectedCell.figure?.canMove(cell)) {
+            selectedCell.moveFigure(cell);
+            setSelectedCell(null)
+            updateBoard();
+        } else {
+            setSelectedCell(cell);
+        }
+    }
+
+    function highliteCells() {
+        board.highliteCells(selectedCell)
+        updateBoard()
+    }
+
+    function updateBoard() {
+        const newBoard = board.getCopyBoard()
+        setBoard(newBoard)
+    }
+
+    return (
+      <div className="board">
+          {board.cells.map((row, index) =>
+              <React.Fragment key={index}>
+                  {row.map(cell => <CellComponent
+                      cell={cell}
+                      key={cell.id}
+                      click={click}
+                      selected={cell.x === selectedCell?.x && cell.y === selectedCell?.y}
+                  />)}
+              </React.Fragment>
+          )}
+      </div>
+    );
 };  
 
 export default BoardComponent;
